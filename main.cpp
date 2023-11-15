@@ -19,7 +19,7 @@ public:
 			}
 			catch (const std::exception& e)
 			{
-				std::cout << "Connected error!" << e.what() << std::endl;
+				std::cout << "Connection error!" << e.what() << std::endl;
 			}
 		}
 	}
