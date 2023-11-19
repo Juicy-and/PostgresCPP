@@ -14,7 +14,7 @@ public:
 					"dbname=CPPbd "
 					"user=postgres "
 					"password=7845");
-				std::cout << "OK!" << std::endl;
+				std::cout << "Connection OK!" << std::endl;
 
 			}
 			catch (const std::exception& e)
@@ -49,26 +49,25 @@ public:
 		phones.commit();
 	}
 
-	void AddClient()
+	void AddClient(std::string name, std::string lastname, std::string email)
 	{
 		
 		pqxx::transaction ac(*conn);
-		ac.exec("INSERT INTO Client(id, name, lastname, email) values (1, 'Andrey', 'Lavrentev', 'AndLav@mail.ru')");
+		ac.exec("INSERT INTO Client(id, name, lastname, email) values (1, '" + name + "', '" + lastname + "', '" + email + "')");
 		ac.commit();
 	}
 
-	void AddPhone()
+	void AddPhone(std::string phone)
 	{
 		pqxx::transaction ap(*conn);
-		ap.exec("INSERT INTO Phone(id,phone,id_phone) values (1, 88005553535, 1)");
-		ap.exec("INSERT INTO Phone (id,phone,id_phone) values (2, 8999999999, 1 )");
+		ap.exec("INSERT INTO Phone(id,phone,id_phone) values (1, '" + phone + "' , 1)");
 		ap.commit();
 	}
 
-	void UpdateClient()
+	void UpdateClient(std::string updname)
 	{
 		pqxx::transaction uc(*conn);
-		uc.exec("UPDATE Client set name='ANDREY' where id = 1");
+		uc.exec("UPDATE Client set name='" + updname+ "' where id =1");
 		uc.commit();
 	}
 
@@ -96,14 +95,16 @@ public:
 };
 
 int main() {
-	setlocale(LC_ALL, "Russian");
+	setlocale(LC_ALL, "ru_RU.UTF-8");
+
 	try {
 		TablesClient tb;
 		tb.Connect();
 		tb.CreateTables();
-		tb.AddClient();
+		tb.AddClient("Andrey", "Lavrentev", "LavAnd@mail.ru");
 		tb.Phone();
-		tb.UpdateClient();
+		tb.AddPhone("88005553535");
+		tb.UpdateClient("ANDREY");
 		tb.SearchClient();
 		tb.DeletePhone();
 		tb.DeleteClient();
