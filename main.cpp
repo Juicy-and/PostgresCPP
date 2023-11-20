@@ -53,43 +53,42 @@ public:
 	{
 		
 		pqxx::transaction ac(*conn);
-		ac.exec("INSERT INTO Client(id, name, lastname, email) values (1, '" + name + "', '" + lastname + "', '" + email + "')");
+		ac.exec("INSERT INTO Client(id, name, lastname, email) values (1, '" + ac.esc(name) + "', '" + ac.esc(lastname) + "', '" + ac.esc(email) + "')");
 		ac.commit();
 	}
 
-	void AddPhone(std::string phone)
+	void AddPhone(std::string phone, std::string id)
 	{
 		pqxx::transaction ap(*conn);
-		ap.exec("INSERT INTO Phone(id,phone,id_phone) values (1, '" + phone + "' , 1)");
+		ap.exec("INSERT INTO Phone(id,phone,id_phone) values (1, '" + ap.esc(phone) + "', '" + ap.esc(id) + "')");
 		ap.commit();
 	}
 
-	void UpdateClient(std::string updname)
+	void UpdateClient(std::string updname,std::string id)
 	{
 		pqxx::transaction uc(*conn);
-		uc.exec("UPDATE Client set name='" + updname+ "' where id =1");
+		uc.exec("UPDATE Client set name='" + uc.esc(updname)+ "' where id ="+uc.esc(id));
 		uc.commit();
 	}
 
-	void DeletePhone()
+	void DeletePhone(std::string id)
 	{
 		pqxx::transaction dp(*conn);
-		dp.exec("DELETE from Phone where id=1");
-		dp.exec("DELETE from Phone where id=2");
+		dp.exec("DELETE from Phone where id="+dp.esc(id));
 		dp.commit();
 	}
 
-	void DeleteClient()
+	void DeleteClient(std::string id)
 	{
 		pqxx::transaction dc(*conn);
-		dc.exec("DELETE from Client where id=1");
+		dc.exec("DELETE from Client where id=" + dc.esc(id));
 		dc.commit();
 	}
 
-	void SearchClient()
+	void SearchClient(std::string search)
 	{
 		pqxx::transaction t(*conn);
-		auto result = t.exec("SELECT * FROM Client where name = 'ANDREY'");
+		auto result = t.exec("SELECT * FROM Client where name ='"+ t.esc(search)+ "'");
 		t.commit();
 	}
 };
@@ -103,11 +102,11 @@ int main() {
 		tb.CreateTables();
 		tb.AddClient("Andrey", "Lavrentev", "LavAnd@mail.ru");
 		tb.Phone();
-		tb.AddPhone("88005553535");
-		tb.UpdateClient("ANDREY");
-		tb.SearchClient();
-		tb.DeletePhone();
-		tb.DeleteClient();
+		tb.AddPhone("88005553535","1");
+		tb.UpdateClient("ANDREY","1");
+		tb.SearchClient("ANDREY");
+		tb.DeletePhone("1");
+		tb.DeleteClient("1");
 	}
 	catch (const std::exception& e)
 	{
